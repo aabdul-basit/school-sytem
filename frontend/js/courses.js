@@ -14,7 +14,7 @@ const courses = [
 
     {
         name: "Mathematics",
-        teacher: "Mrs. Fatima Ali",
+        teacher: "Mrs. Fatima ",
         duration: 6,
         icon: "📐",
         description: "Develop strong mathematical skills through practical problems and exercises."
