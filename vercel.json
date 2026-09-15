@@ -3,6 +3,14 @@
     {
       "source": "/",
       "destination": "/frontend/html/home.html"
+    },
+    {
+      "source": "/css/(.*)",
+      "destination": "/frontend/css/$1"
+    },
+    {
+      "source": "/js/(.*)",
+      "destination": "/frontend/js/$1"
     }
   ]
 }
