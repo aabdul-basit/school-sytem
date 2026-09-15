@@ -5,6 +5,10 @@
       "destination": "/frontend/html/home.html"
     },
     {
+      "source": "/courses.html",
+      "destination": "/frontend/html/courses.html"
+    },
+    {
       "source": "/css/(.*)",
       "destination": "/frontend/css/$1"
     },

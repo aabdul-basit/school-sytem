@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Courses - MySchool</title>
+
+    <link rel="stylesheet" href="/css/courses.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <nav class="navbar">
+
+            <div class="logo">
+                My<span>School</span>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="/frontend/html/home.html">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="/courses.html" class="active">Courses</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+
+            <button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+        </nav>
+    </header>
+
+
+    <!-- Courses Section -->
+    <main>
+
+        <section class="courses-section">
+
+            <div class="page-heading">
+                <p class="subtitle">OUR PROGRAMS</p>
+
+                <h1>
+                    Available <span>Courses</span>
+                </h1>
+
+                <p>
+                    Explore our courses and learn from experienced teachers
+                    in a friendly learning environment.
+                </p>
+            </div>
+
+
+            <!-- Search and Filter -->
+            <div class="course-controls">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search course or teacher..."
+                >
+
+                <select id="durationFilter">
+                    <option value="all">All Durations</option>
+                    <option value="3">3 Months</option>
+                    <option value="6">6 Months</option>
+                    <option value="12">12 Months</option>
+                </select>
+
+            </div>
+
+
+            <!-- Courses -->
+            <div id="coursesContainer" class="courses-container">
+                <!-- JavaScript will add courses here -->
+            </div>
+
+
+            <!-- No Result Message -->
+            <div id="noResults" class="no-results">
+                <h2>No courses found</h2>
+                <p>Try another course name or teacher.</p>
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 MySchool. All Rights Reserved.</p>
+    </footer>
+
+
+    <script src="/js/courses.js"></script>
+
+</body>
+</html>
