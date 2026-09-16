@@ -48,7 +48,7 @@ def courses():
 @app.route("/application")
 def application():
 
-    return render_template("apllicationform.html")
+    return render_template("applicationform.html")
 
 
 # ==========================================
