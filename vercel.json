@@ -9,6 +9,10 @@
       "destination": "/frontend/html/courses.html"
     },
     {
+      "source": "/application.html",
+      "destination": "/frontend/html/application.html"
+    },
+    {
       "source": "/css/(.*)",
       "destination": "/frontend/css/$1"
     },

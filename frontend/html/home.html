@@ -3,15 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abdul Basit</title>
+
+    <title>Abdul Basit School System</title>
+
     <link rel="stylesheet" href="/css/home.css">
 </head>
+
 <body>
 
     <header>
         <nav class="navbar">
 
-            <div class="logo"><span>Abdul Basit School system</span></div>
+            <div class="logo">
+                <span>Abdul Basit School System</span>
+            </div>
 
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
@@ -19,73 +24,160 @@
                 <li><a href="/courses.html">Courses</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
-            <button id="themeBtn" class="theme-btn">🎨 Theme</button>
 
-<div id="themeMenu" class="theme-menu">
-    <button onclick="changeTheme('blue')">🔵 Blue</button>
-    <button onclick="changeTheme('green')">🟢 Green</button>
-    <button onclick="changeTheme('purple')">🟣 Purple</button>
-    <button onclick="changeTheme('orange')">🟠 Orange</button>
-    <button onclick="changeTheme('red')">🔴 Red</button>
-    <button onclick="changeTheme('dark')">⚫ Dark</button>
-</div>
+            <!-- Theme Button -->
+            <button id="themeBtn" class="theme-btn">
+                🎨 Theme
+            </button>
 
-            <button class="menu-btn" onclick="toggleMenu()">☰</button>
+            <!-- Theme Menu -->
+            <div id="themeMenu" class="theme-menu">
+                <button onclick="changeTheme('blue')">🔵 Blue</button>
+                <button onclick="changeTheme('green')">🟢 Green</button>
+                <button onclick="changeTheme('purple')">🟣 Purple</button>
+                <button onclick="changeTheme('orange')">🟠 Orange</button>
+                <button onclick="changeTheme('red')">🔴 Red</button>
+                <button onclick="changeTheme('dark')">⚫ Dark</button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <button class="menu-btn" onclick="toggleMenu()">
+                ☰
+            </button>
+
         </nav>
     </header>
 
+
     <main>
+
+        <!-- HOME SECTION -->
         <section class="hero" id="home">
+
             <div class="hero-content">
-                <p class="subtitle">WELCOME TO OUR SCHOOL</p>
-                <h1>Learn Today,<br><span>Lead Tomorrow.</span></h1>
+
+                <p class="subtitle">
+                    WELCOME TO OUR SCHOOL
+                </p>
+
+                <h1>
+                    Learn Today,<br>
+                    <span>Lead Tomorrow.</span>
+                </h1>
+
                 <p>
                     We provide quality education in a friendly environment
                     where students can learn, grow, and achieve their dreams.
                 </p>
 
                 <div class="buttons">
-                    <a href="/courses.html" class="btn primary">Explore Courses</a>
-                    <a href="#about" class="btn secondary">Learn More</a>
+
+                    <!-- Courses Button -->
+                    <a href="/courses.html" class="btn primary">
+                        Explore Courses
+                    </a>
+
+                    <!-- APPLY BUTTON -->
+                    <a href="/application.html" class="btn secondary">
+                        Apply
+                    </a>
+
                 </div>
+
             </div>
+
 
             <div class="hero-card">
-                <div class="icon">🎓</div>
-                <h2>Quality Education</h2>
-                <p>Building knowledge, confidence, and a brighter future.</p>
+
+                <div class="icon">
+                    🎓
+                </div>
+
+                <h2>
+                    Quality Education
+                </h2>
+
+                <p>
+                    Building knowledge, confidence, and a brighter future.
+                </p>
+
             </div>
+
         </section>
 
+
+        <!-- ABOUT SECTION -->
         <section class="about" id="about">
-            <h2>Why Choose Us?</h2>
+
+            <h2>
+                Why Choose Us?
+            </h2>
 
             <div class="cards">
+
                 <div class="card">
+
                     <div>📚</div>
-                    <h3>Expert Teachers</h3>
-                    <p>Learn from experienced and dedicated teachers.</p>
+
+                    <h3>
+                        Expert Teachers
+                    </h3>
+
+                    <p>
+                        Learn from experienced and dedicated teachers.
+                    </p>
+
                 </div>
 
+
                 <div class="card">
+
                     <div>💡</div>
-                    <h3>Modern Learning</h3>
-                    <p>Interactive and creative methods for better learning.</p>
+
+                    <h3>
+                        Modern Learning
+                    </h3>
+
+                    <p>
+                        Interactive and creative methods for better learning.
+                    </p>
+
                 </div>
 
+
                 <div class="card">
+
                     <div>🏆</div>
-                    <h3>Student Success</h3>
-                    <p>Helping students reach their goals and potential.</p>
+
+                    <h3>
+                        Student Success
+                    </h3>
+
+                    <p>
+                        Helping students reach their goals and potential.
+                    </p>
+
                 </div>
+
             </div>
+
         </section>
+
     </main>
 
+
+    <!-- FOOTER -->
     <footer id="contact">
-        <p>© 2026 Abdul Basit School system. All Rights Reserved.</p>
+
+        <p>
+            © 2026 Abdul Basit School System.
+            All Rights Reserved.
+        </p>
+
     </footer>
 
+
     <script src="/js/home.js"></script>
+
 </body>
 </html>

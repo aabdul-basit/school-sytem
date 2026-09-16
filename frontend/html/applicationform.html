@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Admission Application - Abdul Basit School System
+    </title>
+
+    <link rel="stylesheet" href="/css/application.css">
+
+</head>
+
+
+<body>
+
+    <div class="application-container">
+
+        <!-- HEADER -->
+
+        <div class="application-header">
+
+            <h1>
+                Abdul Basit School System
+            </h1>
+
+            <p>
+                Student Admission Application
+            </p>
+
+        </div>
+
+
+        <!-- APPLICATION FORM -->
+
+        <form id="applicationForm">
+
+
+            <!-- STUDENT INFORMATION -->
+
+            <div class="form-section">
+
+                <h2>
+                    Student Information
+                </h2>
+
+
+                <div class="form-group">
+
+                    <label for="studentName">
+                        Student Name *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="studentName"
+                        name="studentName"
+                        placeholder="Enter student name"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="fatherName">
+                        Father's Name *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="fatherName"
+                        name="fatherName"
+                        placeholder="Enter father's name"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter email address"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="phone">
+                        Phone Number *
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        placeholder="Enter phone number"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="class">
+                        Applying For Class *
+                    </label>
+
+                    <select
+                        id="class"
+                        name="class"
+                        required
+                    >
+
+                        <option value="">
+                            Select Class
+                        </option>
+
+                        <option value="6">
+                            Class 6
+                        </option>
+
+                        <option value="7">
+                            Class 7
+                        </option>
+
+                        <option value="8">
+                            Class 8
+                        </option>
+
+                        <option value="9">
+                            Class 9
+                        </option>
+
+                        <option value="10">
+                            Class 10
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="message">
+                        Additional Information
+                    </label>
+
+                    <textarea
+                        id="message"
+                        name="message"
+                        rows="4"
+                        placeholder="Enter any additional information"
+                    ></textarea>
+
+                </div>
+
+
+                <!-- SUBMIT BUTTON -->
+
+                <button
+                    type="submit"
+                    class="submit-btn"
+                >
+                    Submit Application
+                </button>
+
+
+            </div>
+
+        </form>
+
+
+        <!-- SUCCESS MESSAGE -->
+
+        <div
+            id="successMessage"
+            class="success-message"
+        >
+
+            Application submitted successfully!
+
+        </div>
+
+
+        <!-- BACK TO HOME -->
+
+        <div class="back-home">
+
+            <a href="/">
+                ← Back to Home
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <script src="/js/application.js"></script>
+
+</body>
+
+</html>
