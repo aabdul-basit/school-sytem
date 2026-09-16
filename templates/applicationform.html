@@ -12,7 +12,8 @@
         Admission Application - Abdul Basit School System
     </title>
 
-    <link rel="stylesheet" href="/css/applicationform.css">
+    <link rel="stylesheet"
+      href="{{ url_for('static', filename='css/application.css') }}">
 
 </head>
 
@@ -214,7 +215,7 @@
     </div>
 
 
-    <script src="/js/applicationform.js"></script>
+    <script src="{{ url_for('static', filename='js/application.js') }}"></script>
 
 </body>
 
