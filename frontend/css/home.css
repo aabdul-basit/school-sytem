@@ -258,3 +258,170 @@ footer {
         grid-template-columns: 1fr;
     }
 }
+/* =========================
+   THEME SYSTEM
+========================= */
+
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --background: #ffffff;
+    --surface: #f8fafc;
+    --text: #1e293b;
+    --text-light: #64748b;
+}
+
+/* BLUE */
+body.theme-blue {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+}
+
+/* GREEN */
+body.theme-green {
+    --primary: #16a34a;
+    --primary-dark: #15803d;
+}
+
+/* PURPLE */
+body.theme-purple {
+    --primary: #9333ea;
+    --primary-dark: #7e22ce;
+}
+
+/* ORANGE */
+body.theme-orange {
+    --primary: #ea580c;
+    --primary-dark: #c2410c;
+}
+
+/* RED */
+body.theme-red {
+    --primary: #dc2626;
+    --primary-dark: #b91c1c;
+}
+
+/* DARK */
+body.theme-dark {
+    --primary: #60a5fa;
+    --primary-dark: #3b82f6;
+    --background: #0f172a;
+    --surface: #1e293b;
+    --text: #f8fafc;
+    --text-light: #cbd5e1;
+
+    background: var(--background);
+    color: var(--text);
+}
+
+/* =========================
+   APPLY THEME COLORS
+========================= */
+
+body {
+    background: var(--background);
+    color: var(--text);
+    transition: background 0.3s, color 0.3s;
+}
+
+.logo span {
+    color: var(--primary);
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--primary);
+}
+
+.btn.primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn.primary:hover {
+    background: var(--primary-dark);
+}
+
+.btn.secondary {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.btn.secondary:hover {
+    background: var(--primary);
+    color: white;
+}
+
+/* =========================
+   THEME BUTTON
+========================= */
+
+.theme-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.theme-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+/* =========================
+   THEME MENU
+========================= */
+
+.theme-menu {
+    display: none;
+    position: absolute;
+    right: 20px;
+    top: 70px;
+    width: 160px;
+    background: var(--background);
+    padding: 10px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+}
+
+.theme-menu.show {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.theme-menu button {
+    border: none;
+    padding: 10px 12px;
+    border-radius: 7px;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    font-size: 14px;
+}
+
+.theme-menu button:hover {
+    background: var(--primary);
+    color: white;
+}
+
+/* =========================
+   DARK THEME ELEMENTS
+========================= */
+
+body.theme-dark .navbar {
+    background: #020617;
+}
+
+body.theme-dark .course-card,
+body.theme-dark .about-card,
+body.theme-dark .contact-card {
+    background: var(--surface);
+    color: var(--text);
+}
