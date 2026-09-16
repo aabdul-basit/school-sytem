@@ -1,24 +1,15 @@
 {
-  "rewrites": [
+  "version": 2,
+  "builds": [
     {
-      "source": "/",
-      "destination": "/frontend/html/home.html"
-    },
+      "src": "app.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
     {
-      "source": "/courses.html",
-      "destination": "/frontend/html/courses.html"
-    },
-    {
-      "source": "/applicationform.html",
-      "destination": "/frontend/html/applicationform.html"
-    },
-    {
-      "source": "/css/(.*)",
-      "destination": "/frontend/css/$1"
-    },
-    {
-      "source": "/js/(.*)",
-      "destination": "/frontend/js/$1"
+      "src": "/(.*)",
+      "dest": "app.py"
     }
   ]
 }
