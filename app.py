@@ -1,9 +1,16 @@
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
-import mysql.connector
+import sqlite3
 
 app = Flask(__name__)
 CORS(app)
+
+
+# =========================
+# DATABASE CONFIGURATION
+# =========================
+
+DATABASE = "school_system.db"
 
 
 # =========================
@@ -11,12 +18,35 @@ CORS(app)
 # =========================
 
 def get_database():
-    return mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="YOUR_MYSQL_PASSWORD",
-        database="school_system"
-    )
+    db = sqlite3.connect(DATABASE)
+
+    # Allows rows to behave like dictionaries
+    db.row_factory = sqlite3.Row
+
+    return db
+
+
+# =========================
+# INITIALIZE DATABASE
+# =========================
+
+def init_database():
+    db = get_database()
+
+    cursor = db.cursor()
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS students (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
+    db.commit()
+
+    cursor.close()
+    db.close()
 
 
 # =========================
@@ -45,6 +75,53 @@ def courses():
 def application():
     return render_template("applicationform.html")
 
+# =========================
+# DASHBOARD PAGE
+# =========================
+
+@app.route("/dashboard")
+def dashboard():
+    return render_template("dashboard.html")
+
+
+# =========================
+# DASHBOARD API
+# =========================
+
+@app.route("/api/dashboard/students", methods=["GET"])
+def dashboard_students():
+
+    try:
+        db = get_database()
+        cursor = db.cursor()
+
+        cursor.execute("""
+            SELECT id, name, created_at
+            FROM students
+            ORDER BY id DESC
+        """)
+
+        rows = cursor.fetchall()
+
+        students = [dict(row) for row in rows]
+
+        cursor.close()
+        db.close()
+
+        return jsonify({
+            "success": True,
+            "students": students
+        })
+
+    except Exception as error:
+
+        print("Dashboard database error:", error)
+
+        return jsonify({
+            "success": False,
+            "message": "Could not load students."
+        }), 500
+
 
 # =========================
 # SAVE STUDENT
@@ -58,7 +135,7 @@ def add_student():
         # Get data sent by JavaScript
         data = request.get_json()
 
-        # Get only student name
+        # Get student name
         name = data.get("name")
 
         # Check name
@@ -68,16 +145,15 @@ def add_student():
                 "message": "Student name is required."
             }), 400
 
-        # Connect to MySQL
+        # Connect to SQLite
         db = get_database()
 
-        # Create cursor
         cursor = db.cursor()
 
-        # Insert student name
+        # Insert student
         sql = """
             INSERT INTO students (name)
-            VALUES (%s)
+            VALUES (?)
         """
 
         cursor.execute(sql, (name.strip(),))
@@ -120,9 +196,10 @@ def get_students():
 
     try:
 
+        # Connect to SQLite
         db = get_database()
 
-        cursor = db.cursor(dictionary=True)
+        cursor = db.cursor()
 
         cursor.execute("""
             SELECT id, name, created_at
@@ -130,7 +207,10 @@ def get_students():
             ORDER BY id DESC
         """)
 
-        students = cursor.fetchall()
+        rows = cursor.fetchall()
+
+        # Convert SQLite rows to dictionaries
+        students = [dict(row) for row in rows]
 
         cursor.close()
         db.close()
@@ -168,6 +248,10 @@ def test():
 # =========================
 
 if __name__ == "__main__":
+
+    # Create database and table
+    init_database()
+
     app.run(
         host="127.0.0.1",
         port=5000,
