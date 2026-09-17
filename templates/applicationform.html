@@ -12,8 +12,9 @@
         Admission Application - Abdul Basit School System
     </title>
 
+    <!-- Application CSS -->
     <link rel="stylesheet"
-      href="{{ url_for('static', filename='css/applicationform.css') }}">
+          href="{{ url_for('static', filename='css/applicationform.css') }}">
 
 </head>
 
@@ -41,15 +42,14 @@
 
         <form id="applicationForm">
 
-
-            <!-- STUDENT INFORMATION -->
-
             <div class="form-section">
 
                 <h2>
                     Student Information
                 </h2>
 
+
+                <!-- STUDENT NAME -->
 
                 <div class="form-group">
 
@@ -68,6 +68,8 @@
                 </div>
 
 
+                <!-- FATHER NAME -->
+
                 <div class="form-group">
 
                     <label for="fatherName">
@@ -85,6 +87,8 @@
                 </div>
 
 
+                <!-- EMAIL -->
+
                 <div class="form-group">
 
                     <label for="email">
@@ -100,6 +104,8 @@
 
                 </div>
 
+
+                <!-- PHONE -->
 
                 <div class="form-group">
 
@@ -118,15 +124,17 @@
                 </div>
 
 
+                <!-- CLASS -->
+
                 <div class="form-group">
 
-                    <label for="class">
+                    <label for="studentClass">
                         Applying For Class *
                     </label>
 
                     <select
-                        id="class"
-                        name="class"
+                        id="studentClass"
+                        name="studentClass"
                         required
                     >
 
@@ -159,6 +167,8 @@
                 </div>
 
 
+                <!-- ADDITIONAL INFORMATION -->
+
                 <div class="form-group">
 
                     <label for="message">
@@ -175,6 +185,26 @@
                 </div>
 
 
+                <!-- SUCCESS MESSAGE -->
+
+                <div
+                    id="successMessage"
+                    class="success-message"
+                    style="display: none;"
+                >
+                </div>
+
+
+                <!-- ERROR MESSAGE -->
+
+                <div
+                    id="errorMessage"
+                    class="error-message"
+                    style="display: none;"
+                >
+                </div>
+
+
                 <!-- SUBMIT BUTTON -->
 
                 <button
@@ -184,22 +214,9 @@
                     Submit Application
                 </button>
 
-
             </div>
 
         </form>
-
-
-        <!-- SUCCESS MESSAGE -->
-
-        <div
-            id="successMessage"
-            class="success-message"
-        >
-
-            Application submitted successfully!
-
-        </div>
 
 
         <!-- BACK TO HOME -->
@@ -214,6 +231,8 @@
 
     </div>
 
+
+    <!-- Application JavaScript -->
 
     <script src="{{ url_for('static', filename='js/applicationform.js') }}"></script>
 

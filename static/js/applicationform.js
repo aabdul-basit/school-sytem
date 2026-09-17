@@ -4,55 +4,92 @@ const applicationForm =
 const successMessage =
     document.getElementById("successMessage");
 
+const errorMessage =
+    document.getElementById("errorMessage");
 
-applicationForm.addEventListener("submit", function(event) {
+
+applicationForm.addEventListener("submit", async function(event) {
 
     event.preventDefault();
 
 
-    // Get form values
-
+    // Get student name
     const studentName =
-        document.getElementById("studentName").value;
-
-    const fatherName =
-        document.getElementById("fatherName").value;
-
-    const email =
-        document.getElementById("email").value;
-
-    const phone =
-        document.getElementById("phone").value;
-
-    const studentClass =
-        document.getElementById("class").value;
-
-    const message =
-        document.getElementById("message").value;
+        document.getElementById("studentName").value.trim();
 
 
-    // Display submitted information in console
+    // Check student name
+    if (studentName === "") {
 
-    console.log("Student Name:", studentName);
+        errorMessage.textContent =
+            "Please enter student name.";
 
-    console.log("Father's Name:", fatherName);
+        errorMessage.style.display = "block";
 
-    console.log("Email:", email);
+        successMessage.style.display = "none";
 
-    console.log("Phone:", phone);
-
-    console.log("Class:", studentClass);
-
-    console.log("Additional Information:", message);
-
-
-    // Show success message
-
-    successMessage.style.display = "block";
+        return;
+    }
 
 
-    // Clear form
+    try {
 
-    applicationForm.reset();
+        // Send ONLY student name to Flask
+        const response = await fetch("/api/students", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                name: studentName
+            })
+
+        });
+
+
+        // Get Flask response
+        const data = await response.json();
+
+
+        // Check if Flask returned an error
+        if (!response.ok) {
+
+            throw new Error(
+                data.message || "Could not save student."
+            );
+
+        }
+
+
+        // Show success message
+        successMessage.textContent =
+            "Application submitted successfully! Student ID: "
+            + data.student.id;
+
+        successMessage.style.display = "block";
+
+        errorMessage.style.display = "none";
+
+
+        // Clear form
+        applicationForm.reset();
+
+    }
+
+    catch (error) {
+
+        console.error("Error:", error);
+
+        errorMessage.textContent =
+            "Could not save student. Please try again.";
+
+        errorMessage.style.display = "block";
+
+        successMessage.style.display = "none";
+
+    }
 
 });

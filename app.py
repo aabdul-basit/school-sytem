@@ -2,17 +2,15 @@ from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 import mysql.connector
 
-
 app = Flask(__name__)
 CORS(app)
 
 
-# ==========================================
-# MYSQL DATABASE CONNECTION
-# ==========================================
+# =========================
+# DATABASE CONNECTION
+# =========================
 
 def get_database():
-
     return mysql.connector.connect(
         host="localhost",
         user="root",
@@ -21,117 +19,101 @@ def get_database():
     )
 
 
-# ==========================================
+# =========================
 # HOME PAGE
-# ==========================================
+# =========================
 
 @app.route("/")
 def home():
-
     return render_template("home.html")
 
 
-# ==========================================
+# =========================
 # COURSES PAGE
-# ==========================================
+# =========================
 
 @app.route("/courses")
 def courses():
-
     return render_template("courses.html")
 
 
-# ==========================================
-# APPLICATION FORM PAGE
-# ==========================================
+# =========================
+# APPLICATION PAGE
+# =========================
 
 @app.route("/application")
 def application():
-
     return render_template("applicationform.html")
 
 
-# ==========================================
-# ADD STUDENT
-# ==========================================
+# =========================
+# SAVE STUDENT
+# =========================
 
 @app.route("/api/students", methods=["POST"])
 def add_student():
 
     try:
 
+        # Get data sent by JavaScript
         data = request.get_json()
 
+        # Get only student name
         name = data.get("name")
-
 
         # Check name
         if not name or name.strip() == "":
-
             return jsonify({
                 "success": False,
                 "message": "Student name is required."
             }), 400
 
-
-        name = name.strip()
-
-
-        # Connect database
+        # Connect to MySQL
         db = get_database()
 
+        # Create cursor
         cursor = db.cursor()
 
-
-        # Insert student
+        # Insert student name
         sql = """
             INSERT INTO students (name)
             VALUES (%s)
         """
 
-        cursor.execute(sql, (name,))
+        cursor.execute(sql, (name.strip(),))
 
+        # Save changes
         db.commit()
-
 
         # Get new student ID
         student_id = cursor.lastrowid
 
-
+        # Close connection
         cursor.close()
         db.close()
 
-
         return jsonify({
-
             "success": True,
-
-            "message": "Student added successfully.",
-
+            "message": "Student saved successfully.",
             "student": {
                 "id": student_id,
-                "name": name
+                "name": name.strip()
             }
-
         }), 201
-
 
     except Exception as error:
 
-        print("ERROR:", error)
+        print("Database error:", error)
 
         return jsonify({
-
             "success": False,
-
             "message": "Database error."
-
         }), 500
 
 
-# ==========================================
+# =========================
 # GET ALL STUDENTS
-# ==========================================
+# =========================
 
 @app.route("/api/students", methods=["GET"])
 def get_students():
@@ -142,65 +124,50 @@ def get_students():
 
         cursor = db.cursor(dictionary=True)
 
-
         cursor.execute("""
-            SELECT id, name
+            SELECT id, name, created_at
             FROM students
             ORDER BY id DESC
         """)
 
-
         students = cursor.fetchall()
-
 
         cursor.close()
         db.close()
 
-
         return jsonify({
-
             "success": True,
-
             "students": students
-
         })
-
 
     except Exception as error:
 
-        print("ERROR:", error)
+        print("Database error:", error)
 
         return jsonify({
-
             "success": False,
-
             "message": "Database error."
-
         }), 500
 
 
-# ==========================================
-# TEST API
-# ==========================================
+# =========================
+# TEST BACKEND
+# =========================
 
 @app.route("/api/test")
-def test_api():
+def test():
 
     return jsonify({
-
         "success": True,
-
         "message": "Flask backend is working!"
-
     })
 
 
-# ==========================================
-# START FLASK SERVER
-# ==========================================
+# =========================
+# RUN FLASK
+# =========================
 
 if __name__ == "__main__":
-
     app.run(
         host="127.0.0.1",
         port=5000,
