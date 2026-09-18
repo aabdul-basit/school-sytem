@@ -1,259 +1,140 @@
-from flask import Flask, render_template, request, jsonify
-from flask_cors import CORS
-import sqlite3
+import os
+
+import mysql.connector
+from mysql.connector import Error
+from flask import Flask, jsonify, render_template, request
 
 app = Flask(__name__)
-CORS(app)
+
+# ---------------------------------------------------------------------------
+# MYSQL SETTINGS
+# ---------------------------------------------------------------------------
+# >>> PUT YOUR MYSQL PASSWORD HERE <<<
+# Replace MY_MYSQL_PASSWORD (keep the quotes) with the password you chose when
+# you installed MySQL Server. Do not upload this file to GitHub with your real
+# password inside it.
+#
+# Optional (safer): instead of editing this file, set an environment variable
+# named MYSQL_PASSWORD and this code will use it automatically.
+DB_CONFIG = {
+    "host": "localhost",
+    "user": "root",
+    "password": os.environ.get("MYSQL_PASSWORD", "MY_MYSQL_PASSWORD"),
+    "database": "school_system",
+    "charset": "utf8mb4",
+}
 
 
-# =========================
-# DATABASE CONFIGURATION
-# =========================
-
-DATABASE = "school_system.db"
+def get_db_connection():
+    """Open and return a new connection to the local MySQL server."""
+    return mysql.connector.connect(**DB_CONFIG)
 
 
-# =========================
-# DATABASE CONNECTION
-# =========================
-
-def get_database():
-    db = sqlite3.connect(DATABASE)
-
-    # Allows rows to behave like dictionaries
-    db.row_factory = sqlite3.Row
-
-    return db
-
-
-# =========================
-# INITIALIZE DATABASE
-# =========================
-
-def init_database():
-    db = get_database()
-
-    cursor = db.cursor()
-
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS students (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    """)
-
-    db.commit()
-
-    cursor.close()
-    db.close()
-
-
-# =========================
-# HOME PAGE
-# =========================
-
+# ---------------------------------------------------------------------------
+# PAGE ROUTES
+# ---------------------------------------------------------------------------
 @app.route("/")
 def home():
     return render_template("home.html")
 
 
-# =========================
-# COURSES PAGE
-# =========================
-
 @app.route("/courses")
 def courses():
-    return render_template("courses.html")
+    return render_template("coursess.html")
 
-
-# =========================
-# APPLICATION PAGE
-# =========================
 
 @app.route("/application")
 def application():
     return render_template("applicationform.html")
 
-# =========================
-# DASHBOARD PAGE
-# =========================
 
-@app.route("/dashboard")
-def dashboard():
-    return render_template("dashboard.html")
-
-
-# =========================
-# DASHBOARD API
-# =========================
-
-@app.route("/api/dashboard/students", methods=["GET"])
-def dashboard_students():
-
-    try:
-        db = get_database()
-        cursor = db.cursor()
-
-        cursor.execute("""
-            SELECT id, name, created_at
-            FROM students
-            ORDER BY id DESC
-        """)
-
-        rows = cursor.fetchall()
-
-        students = [dict(row) for row in rows]
-
-        cursor.close()
-        db.close()
-
-        return jsonify({
-            "success": True,
-            "students": students
-        })
-
-    except Exception as error:
-
-        print("Dashboard database error:", error)
-
-        return jsonify({
-            "success": False,
-            "message": "Could not load students."
-        }), 500
-
-
-# =========================
-# SAVE STUDENT
-# =========================
-
+# ---------------------------------------------------------------------------
+# API ROUTES
+# ---------------------------------------------------------------------------
 @app.route("/api/students", methods=["POST"])
 def add_student():
+    """Receive a student name as JSON and save it in MySQL."""
+    data = request.get_json(silent=True) or {}
+    name = data.get("name", "")
 
+    # 1. Validate the name
+    if not isinstance(name, str) or not name.strip():
+        return jsonify(success=False, message="Student name is required."), 400
+
+    name = name.strip()
+
+    if len(name) > 100:
+        return jsonify(
+            success=False,
+            message="Student name must be 100 characters or fewer.",
+        ), 400
+
+    # 2. Save it in MySQL
+    connection = None
+    cursor = None
     try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
 
-        # Get data sent by JavaScript
-        data = request.get_json()
+        # %s placeholders protect against SQL injection. Never build the
+        # query by pasting the name directly into the SQL string.
+        cursor.execute("INSERT INTO students (name) VALUES (%s)", (name,))
+        connection.commit()
 
-        # Get student name
-        name = data.get("name")
+        new_id = cursor.lastrowid
 
-        # Check name
-        if not name or name.strip() == "":
-            return jsonify({
-                "success": False,
-                "message": "Student name is required."
-            }), 400
+        return jsonify(
+            success=True,
+            message="Student saved successfully.",
+            student={"id": new_id, "name": name},
+        ), 201
 
-        # Connect to SQLite
-        db = get_database()
+    except Error as err:
+        # The real error is printed in your terminal so you can debug it.
+        print(f"MySQL error: {err}")
+        return jsonify(
+            success=False,
+            message="Database error. Please check the Flask terminal for details.",
+        ), 500
 
-        cursor = db.cursor()
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if connection is not None and connection.is_connected():
+            connection.close()
 
-        # Insert student
-        sql = """
-            INSERT INTO students (name)
-            VALUES (?)
-        """
-
-        cursor.execute(sql, (name.strip(),))
-
-        # Save changes
-        db.commit()
-
-        # Get new student ID
-        student_id = cursor.lastrowid
-
-        # Close connection
-        cursor.close()
-        db.close()
-
-        return jsonify({
-            "success": True,
-            "message": "Student saved successfully.",
-            "student": {
-                "id": student_id,
-                "name": name.strip()
-            }
-        }), 201
-
-    except Exception as error:
-
-        print("Database error:", error)
-
-        return jsonify({
-            "success": False,
-            "message": "Database error."
-        }), 500
-
-
-# =========================
-# GET ALL STUDENTS
-# =========================
 
 @app.route("/api/students", methods=["GET"])
 def get_students():
-
+    """Return every saved student as JSON."""
+    connection = None
+    cursor = None
     try:
-
-        # Connect to SQLite
-        db = get_database()
-
-        cursor = db.cursor()
-
-        cursor.execute("""
-            SELECT id, name, created_at
-            FROM students
-            ORDER BY id DESC
-        """)
-
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute("SELECT id, name, created_at FROM students ORDER BY id")
         rows = cursor.fetchall()
 
-        # Convert SQLite rows to dictionaries
-        students = [dict(row) for row in rows]
+        # JSON cannot store Python datetime objects, so convert to text.
+        for row in rows:
+            if row["created_at"] is not None:
+                row["created_at"] = row["created_at"].strftime("%Y-%m-%d %H:%M:%S")
 
-        cursor.close()
-        db.close()
+        return jsonify(success=True, count=len(rows), students=rows), 200
 
-        return jsonify({
-            "success": True,
-            "students": students
-        })
+    except Error as err:
+        print(f"MySQL error: {err}")
+        return jsonify(
+            success=False,
+            message="Database error. Please check the Flask terminal for details.",
+        ), 500
 
-    except Exception as error:
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if connection is not None and connection.is_connected():
+            connection.close()
 
-        print("Database error:", error)
-
-        return jsonify({
-            "success": False,
-            "message": "Database error."
-        }), 500
-
-
-# =========================
-# TEST BACKEND
-# =========================
-
-@app.route("/api/test")
-def test():
-
-    return jsonify({
-        "success": True,
-        "message": "Flask backend is working!"
-    })
-
-
-# =========================
-# RUN FLASK
-# =========================
 
 if __name__ == "__main__":
-
-    # Create database and table
-    init_database()
-
-    app.run(
-        host="127.0.0.1",
-        port=5000,
-        debug=True
-    )
+    app.run(debug=True)
