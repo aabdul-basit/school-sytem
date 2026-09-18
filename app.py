@@ -11,11 +11,12 @@ app = Flask(__name__)
 # ---------------------------------------------------------------------------
 # >>> PUT YOUR MYSQL PASSWORD HERE <<<
 # Replace MY_MYSQL_PASSWORD (keep the quotes) with the password you chose when
-# you installed MySQL Server. Do not upload this file to GitHub with your real
-# password inside it.
+# you installed MySQL Server.
+#   - XAMPP users: the default password is empty, so use  ""
+#   - Do not upload this file to GitHub with your real password inside it.
 #
-# Optional (safer): instead of editing this file, set an environment variable
-# named MYSQL_PASSWORD and this code will use it automatically.
+# Optional (safer): set an environment variable named MYSQL_PASSWORD and this
+# code will use it automatically instead.
 DB_CONFIG = {
     "host": "localhost",
     "user": "root",
@@ -28,6 +29,38 @@ DB_CONFIG = {
 def get_db_connection():
     """Open and return a new connection to the local MySQL server."""
     return mysql.connector.connect(**DB_CONFIG)
+
+
+def db_error_response(err):
+    """Print the MySQL error in the terminal and return a helpful JSON error.
+
+    While you are developing, the message includes the real MySQL error so you
+    can see it in the browser console. Before putting the site online, replace
+    it with a generic message so you don't reveal database details.
+    """
+    code = getattr(err, "errno", None)
+    detail = getattr(err, "msg", None) or str(err)
+
+    if code == 1045:
+        hint = ("Wrong MySQL username or password. "
+                "Check the password in DB_CONFIG inside app.py.")
+    elif code == 1049:
+        hint = ("The database 'school_system' does not exist. "
+                "Run database.sql first.")
+    elif code == 1146:
+        hint = ("The table 'students' does not exist. "
+                "Run database.sql first.")
+    elif code in (2002, 2003, 2005, 2006, 2013):
+        hint = ("Cannot reach MySQL Server. "
+                "Make sure the MySQL service is running.")
+    else:
+        hint = "Unexpected MySQL error."
+
+    print(f"MySQL error {code}: {detail}")
+    return jsonify(
+        success=False,
+        message=f"Database error: {hint} [MySQL error {code}: {detail}]",
+    ), 500
 
 
 # ---------------------------------------------------------------------------
@@ -90,12 +123,7 @@ def add_student():
         ), 201
 
     except Error as err:
-        # The real error is printed in your terminal so you can debug it.
-        print(f"MySQL error: {err}")
-        return jsonify(
-            success=False,
-            message="Database error. Please check the Flask terminal for details.",
-        ), 500
+        return db_error_response(err)
 
     finally:
         if cursor is not None:
@@ -123,11 +151,7 @@ def get_students():
         return jsonify(success=True, count=len(rows), students=rows), 200
 
     except Error as err:
-        print(f"MySQL error: {err}")
-        return jsonify(
-            success=False,
-            message="Database error. Please check the Flask terminal for details.",
-        ), 500
+        return db_error_response(err)
 
     finally:
         if cursor is not None:

@@ -83,8 +83,9 @@ applicationForm.addEventListener("submit", async function(event) {
 
         console.error("Error:", error);
 
+        // CHANGED: show the real error message from Flask
         errorMessage.textContent =
-            "Could not save student. Please try again.";
+            error.message || "Could not save student. Please try again.";
 
         errorMessage.style.display = "block";
 
